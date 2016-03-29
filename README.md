@@ -38,4 +38,11 @@
 			If run without setting any parameters, sanitize will sanitize everything in the $_GET, $_POST, $_COOKIE, $_REQUEST, and $_FILES arrays.  If these arrays are nonexistent and sanitize is called with no parameters, then it will do nothing.
 		</td>
 	</tr>
+	<tr>
+		<td>Usage:</td>
+		<td>
+			require_once('sanitize.php');<br />
+			sanitize();
+		</td>
+	</tr>
 </table>
