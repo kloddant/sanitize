@@ -4,7 +4,7 @@
 
 		//Prevent the function from being run more than once.
 		global $sanitized;
-		if ($sanitized) {
+		if ($data === NULL and $sanitized) {
 			return;
 		}
 		else if ($data === NULL and $depth === 0) {
