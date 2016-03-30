@@ -18,9 +18,10 @@
 		}
 		// Increment the depth
 		$depth = $depth + 1;
+
 		//Prevent infinite recursion in case something goes wrong.
 		if ($depth > 10) {
-			return;
+			return NULL;
 		}
 
 		//If no data parameter is given, then sanitize all possible user input.
@@ -51,16 +52,16 @@
 			else {
 				$data = False;
 			}
-			$output = (bool) $data;
+			$output = (bool)$data;
 		}
 		else if ($type === "integer" and is_int($data) and is_numeric($data)) {
 			$data = intval($data);
 			$data = filter_var($data, FILTER_SANITIZE_NUMBER_INT);
-			$output = (int) $data;
+			$output = (int)$data;
 		}
 		else if ($type === "double" and is_float($data) and is_numeric($data)) {
 			$data = filter_var($data, FILTER_SANITIZE_NUMBER_FLOAT);
-			$output = (double) $data;
+			$output = (double)$data;
 		}
 		else if ($type === "string") {
 			$data = trim($data);
@@ -73,20 +74,20 @@
 				$data = htmlspecialchars($data);
 				$data = filter_var($data, FILTER_SANITIZE_STRING);
 				$data = addslashes($data);			
-				$output = $data;
 			}
+			$output = (string)$data;
 		}
 		else if ($type === "array" and is_array($data)) {
 			foreach ($data as $key => $value) {
 			   $data[$key] = sanitize($value, $depth);
 			}
-			$output = (array) $data;
+			$output = (array)$data;
 		}
 		else if ($type === "object" and is_object($data)) {
 			foreach ($data as $key => $value) {
 			   $data[$key] = sanitize($value, $depth);
 			}
-			$output = (object) $data;
+			$output = (object)$data;
 		}
 		else if ($type === "resource" and is_resource($data)) {
 		}
