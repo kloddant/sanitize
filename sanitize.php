@@ -2,13 +2,15 @@
 
 	function sanitize($data = NULL, $depth = 0) {
 
-		//Prevent the function from being run more than once.
+		//Prevent the function from being run more than once without specific input.
 		global $sanitized;
-		if ($data === NULL and $sanitized) {
-			return;
-		}
-		else if ($data === NULL and $depth === 0) {
-			$GLOBALS['sanitized'] = True;
+		if ($data === NULL and $depth == 0) {
+			if ($sanitized) {
+				return;
+			}
+			else {
+				$GLOBALS['sanitized'] = True;
+			}
 		}
 
 		if ($depth < 0 or !is_int($depth)) {
@@ -18,11 +20,11 @@
 		$depth = $depth + 1;
 		//Prevent infinite recursion in case something goes wrong.
 		if ($depth > 10) {
-			$data = NULL;
+			return;
 		}
 
 		//If no data parameter is given, then sanitize all possible user input.
-		if ($data === NULL) {
+		if ($data === NULL and $depth == 1) {
 			if (isset($_GET)) {
 				$_GET = sanitize($_GET, $depth);
 			}
@@ -62,12 +64,17 @@
 		}
 		else if ($type === "string") {
 			$data = trim($data);
-			$data = stripslashes($data);
-			$data = strip_tags($data);
-			$data = htmlspecialchars($data);
-			$data = filter_var($data, FILTER_SANITIZE_STRING);
-			$data = addslashes($data);			
-			$output = $data;
+			if (filter_var($data, FILTER_VALIDATE_EMAIL)) {
+				// If $data is an email, leave it alone.
+			}
+			else {
+				$data = stripslashes($data);
+				$data = strip_tags($data);
+				$data = htmlspecialchars($data);
+				$data = filter_var($data, FILTER_SANITIZE_STRING);
+				$data = addslashes($data);			
+				$output = $data;
+			}
 		}
 		else if ($type === "array" and is_array($data)) {
 			foreach ($data as $key => $value) {
@@ -89,4 +96,5 @@
 		}
 		return $output;
 	}
+	
 ?>
